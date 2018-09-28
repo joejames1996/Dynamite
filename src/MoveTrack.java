@@ -1,9 +1,13 @@
-import com.softwire.dynamite.game.Gamestate;
 import com.softwire.dynamite.game.Move;
+
+import java.util.Random;
 
 public class MoveTrack
 {
+    public static Random r = new Random();
     public static int numMovesToTrack = 3;
+
+    public static int numDynamiteUsedByOtherPlayer = 0;
 
     private Move[] moves = new Move[numMovesToTrack];
 
@@ -12,14 +16,20 @@ public class MoveTrack
         this.moves = moves;
     }
 
-    public MovesToList calculateNextMoveChances(Gamestate gamestate)
+    public MovesToList calculateNextMoveChances()
     {
         MovesToList movesToList;
+        if(moves.length > 0)
+        {
+            if (moves[moves.length-1] == Move.D)
+            {
+                numDynamiteUsedByOtherPlayer++;
+            }
+        }
         if (isPattern())
         {
             movesToList = usePatternChances();
-        }
-        else
+        } else
         {
             movesToList = useRandomChances();
         }
@@ -28,10 +38,14 @@ public class MoveTrack
 
     private boolean isPattern()
     {
-        if(this.moves[0] != null)
-            if(this.moves[0] == this.moves[1] && this.moves[0] == this.moves[2])
-                return true;
-        return false;
+        boolean isPattern = true;
+        if (this.moves[0] != null)
+            for(Move m : moves)
+            {
+                if(m != moves[0])
+                    isPattern = false;
+            }
+        return isPattern;
     }
 
     private MovesToList usePatternChances()
@@ -43,17 +57,7 @@ public class MoveTrack
 
     private MovesToList useRandomChances()
     {
-        MovesToList movesToList = new MovesToList(100, 100, 100, DynamiteBot.playingBot.getNumDynamite(), 5);
+        MovesToList movesToList = new MovesToList(1000, 1000, 1000, DynamiteBot.playingBot.getNumDynamite(), (100 - numDynamiteUsedByOtherPlayer) / 10);
         return movesToList;
-    }
-
-    public MovesToList useDynamite()
-    {
-        if(DynamiteBot.playingBot.getNumDynamite() > 0)
-        {
-            MovesToList movesToList = new MovesToList(0, 0, 0, 1, 0);
-            return movesToList;
-        }
-        return useRandomChances();
     }
 }

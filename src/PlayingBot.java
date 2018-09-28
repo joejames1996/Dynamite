@@ -1,6 +1,11 @@
 public class PlayingBot
 {
-    private int numDynamite = 100;
+    private int numDynamite;
+
+    public PlayingBot()
+    {
+        this.numDynamite = 100;
+    }
 
     public int getNumDynamite()
     {
@@ -14,6 +19,6 @@ public class PlayingBot
 
     public void decreaseDynamite()
     {
-        this.numDynamite--;
+        setNumDynamite(getNumDynamite() - 1);
     }
 }

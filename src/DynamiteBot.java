@@ -3,13 +3,18 @@ import com.softwire.dynamite.game.Gamestate;
 import com.softwire.dynamite.game.Move;
 import com.softwire.dynamite.game.Round;
 
+import java.util.Random;
+
 public class DynamiteBot implements Bot
 {
     public static final PlayingBot playingBot = new PlayingBot();
     public static final int roundLimit = 2500;
 
+    Random r = new Random();
+
     public Move makeMove(Gamestate gamestate)
     {
+        //MoveTrack.numMovesToTrack = MoveTrack.r.nextInt(2) + 2;
         int lastRoundNum = gamestate.getRounds().size();
         Round[] rounds = new Round[roundLimit];
         Move[] moves = new Move[MoveTrack.numMovesToTrack];
@@ -32,14 +37,21 @@ public class DynamiteBot implements Bot
         }
 
         MoveTrack moveTrack = new MoveTrack(moves);
-        MovesToList movesToList = moveTrack.calculateNextMoveChances(gamestate);
+        MovesToList movesToList = moveTrack.calculateNextMoveChances();
 
         Move move = movesToList.getMove();
 
         if(move == null)
             return Move.R;
 
-        if(move == Move.D)
+        if(tiedLastRound(gamestate))
+        {
+            int rand = r.nextInt(2);
+            Move m = rand > 0 ? Move.D : Move.W;
+            move = Move.W;
+        }
+
+        if(move.equals(Move.D))
             playingBot.decreaseDynamite();
 
         return move;
@@ -48,7 +60,8 @@ public class DynamiteBot implements Bot
     private boolean tiedLastRound(Gamestate gamestate)
     {
         int lastRoundNum = gamestate.getRounds().size();
-        Round lastRound = gamestate.getRounds().get(lastRoundNum);
+        if(lastRoundNum < 1) return false;
+        Round lastRound = gamestate.getRounds().get(lastRoundNum - 1);
         if(lastRound.getP1().equals(lastRound.getP2()))
             return true;
         return false;
