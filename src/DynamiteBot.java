@@ -6,7 +6,7 @@ import com.softwire.dynamite.game.Round;
 public class DynamiteBot implements Bot
 {
     public static final PlayingBot playingBot = new PlayingBot();
-    private static final int roundLimit = 2500;
+    public static final int roundLimit = 2500;
 
     public Move makeMove(Gamestate gamestate)
     {
@@ -31,19 +31,10 @@ public class DynamiteBot implements Bot
             }
         }
 
-        Move move;
+        MoveTrack moveTrack = new MoveTrack(moves);
+        MovesToList movesToList = moveTrack.calculateNextMoveChances(gamestate);
 
-        if(lastRoundNum > 0 && tiedLastRound(gamestate))
-        {
-            move = Move.D;
-        }
-        else
-        {
-            MoveTrack moveTrack = new MoveTrack(moves);
-            MovesToList movesToList = moveTrack.calculateNextMoveChances();
-
-            move = movesToList.getMove();
-        }
+        Move move = movesToList.getMove();
 
         if(move == null)
             return Move.R;

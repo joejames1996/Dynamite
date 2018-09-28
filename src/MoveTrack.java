@@ -1,3 +1,4 @@
+import com.softwire.dynamite.game.Gamestate;
 import com.softwire.dynamite.game.Move;
 
 public class MoveTrack
@@ -11,7 +12,7 @@ public class MoveTrack
         this.moves = moves;
     }
 
-    public MovesToList calculateNextMoveChances()
+    public MovesToList calculateNextMoveChances(Gamestate gamestate)
     {
         MovesToList movesToList;
         if (isPattern())
