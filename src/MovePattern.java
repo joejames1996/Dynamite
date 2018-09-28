@@ -55,7 +55,7 @@ public class MovePattern
     private static Move generateRandomMove(Move move)
     {
         List<Move> moveList = new ArrayList<>();
-        for(int i = 0; i < 300; i++)
+        for(int i = 0; i < 200; i++)
         {
             if(i < 100)
             {
