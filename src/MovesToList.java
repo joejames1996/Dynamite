@@ -3,27 +3,42 @@ import com.softwire.dynamite.game.Move;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class MovesToList
 {
+    Random r = new Random();
+
     private int rockChance;
     private int paperChance;
     private int scissorsChance;
     private int dynamiteChance;
     private int waterChance;
 
+    private Move moveToPlay;
+
+    private boolean isRandomMove;
+
     public static List<Move> movesToPlay;
 
     public MovesToList(int rockChance, int paperChance, int scissorsChance, int dynamiteChance, int waterChance)
     {
+        isRandomMove = true;
         this.rockChance = rockChance;
         this.paperChance = paperChance;
         this.scissorsChance = scissorsChance;
         this.dynamiteChance = dynamiteChance;
         this.waterChance = waterChance;
+        this.movesToPlay = createMovesList();
     }
 
-    public void createMovesList()
+    public MovesToList(Move move)
+    {
+        isRandomMove = false;
+        this.moveToPlay = move;
+    }
+
+    public List<Move> createMovesList()
     {
         movesToPlay = new ArrayList<>();
         Move[] rockMoves = new Move[getRockChance()];
@@ -43,6 +58,8 @@ public class MovesToList
         movesToPlay.addAll(Arrays.asList(scissorsMoves));
         movesToPlay.addAll(Arrays.asList(dynamiteMoves));
         movesToPlay.addAll(Arrays.asList(waterMoves));
+
+        return movesToPlay;
     }
 
     public int getRockChance()
@@ -68,5 +85,24 @@ public class MovesToList
     public int getWaterChance()
     {
         return waterChance;
+    }
+
+    public Move getMove(List<Move> movesList)
+    {
+        int moveIndex = r.nextInt(movesList.size());
+
+        return movesList.get(moveIndex);
+    }
+
+    public Move getMove(Move move)
+    {
+        return move;
+    }
+
+    public Move getMove()
+    {
+        if(isRandomMove)
+            return getMove(this.movesToPlay);
+        else return getMove(this.moveToPlay);
     }
 }
